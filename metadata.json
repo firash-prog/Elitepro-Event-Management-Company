@@ -1,0 +1,6 @@
+{
+  "name": "ElitePro Events",
+  "description": "Luxury Event Management & Production Agency landing page with high-end motion design.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
