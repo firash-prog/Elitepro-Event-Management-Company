@@ -29,12 +29,15 @@ export default function RFQEngine() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: 'top top',
-        pin: true,
-        end: '+=100%',
-      });
+      const isMobile = window.innerWidth < 768;
+      if (!isMobile) {
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: 'top top',
+          pin: true,
+          end: '+=100%',
+        });
+      }
     }, sectionRef);
     return () => ctx.revert();
   }, []);
@@ -73,7 +76,7 @@ export default function RFQEngine() {
   };
 
   return (
-    <section id="rfq-engine" ref={sectionRef} className="h-screen w-full flex flex-col items-center justify-center bg-brand-dark text-white relative overflow-hidden px-6">
+    <section id="rfq-engine" ref={sectionRef} className="min-h-screen md:h-screen w-full flex flex-col items-center justify-center bg-brand-dark text-white relative overflow-hidden px-6 py-24 md:py-0">
       {/* Background Glow */}
       <div 
         className="absolute inset-0 pointer-events-none"

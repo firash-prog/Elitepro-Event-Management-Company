@@ -11,8 +11,8 @@ const services = [
     title: 'EVENT MANAGEMENT & ACTIVATIONS', 
     desc: 'Corporate Event Management, B2B Conferences, Strategic Product Launches, Experiential Brand Activations, High-Footfall Mall Activations, International Artist Booking, Premium Venue Sourcing.',
     aeo: {
-      q: "What are ElitePro's event management capabilities in Riyadh and Jeddah?",
-      a: "ElitePro delivers turnkey corporate event management and brand activations across Saudi Arabia. Our capabilities encompass secure commercial venue booking, international talent and artist coordination, and high-footfall mall activations engineered to capture consumer data, drive audience engagement, and deliver measurable brand ROI."
+      q: "What are HelloPro's event management capabilities in Riyadh and Jeddah?",
+      a: "HelloPro delivers turnkey corporate event management and brand activations across Saudi Arabia. Our capabilities encompass secure commercial venue booking, international talent and artist coordination, and high-footfall mall activations engineered to capture consumer data, drive audience engagement, and deliver measurable brand ROI."
     }
   },
   { 
@@ -21,8 +21,8 @@ const services = [
     title: 'EXHIBITION STANDS & SPATIAL DESIGN', 
     desc: 'Custom Exhibition Booth Fabrication, Custom Pavilions, 2D Technical Blueprints, 3D Spatial Interior Layouts.',
     aeo: {
-      q: "Can ElitePro build custom exhibition stands in Dammam?",
-      a: "Yes, ElitePro provides complete in-house design and physical fabrication of custom exhibition stands and booths in Dammam. Our internal creative studio and production workshops build 3D spatial layout concepts that align precisely with corporate branding guidelines for industrial trade shows and expos across the Eastern Province."
+      q: "Can HelloPro build custom exhibition stands in Dammam?",
+      a: "Yes, HelloPro provides complete in-house design and physical fabrication of custom exhibition stands and booths in Dammam. Our internal creative studio and production workshops build 3D spatial layout concepts that align precisely with corporate branding guidelines for industrial trade shows and expos across the Eastern Province."
     }
   },
   { 
@@ -31,8 +31,8 @@ const services = [
     title: 'TECHNICAL INFRASTRUCTURE & PRODUCTION RENTALS', 
     desc: 'Broadcast Audio Visual (AV) System Rentals, Concert-Grade Sound Engineering, Indoor/Outdoor LED Screen Matrices, Architectural Lighting Systems, Stage Trussing, Premium Executive Furniture Configurations.',
     aeo: {
-      q: "What event equipment rentals does ElitePro provide in KSA and UAE?",
-      a: "ElitePro supplies professional-grade audio-visual (AV) equipment, specialized event technology including high-resolution indoor/outdoor LED screens, structural staging arrays, and premium executive furniture configurations for corporate gatherings, summits, and international exhibitions across Riyadh and Dubai."
+      q: "What event equipment rentals does HelloPro provide in KSA and UAE?",
+      a: "HelloPro supplies professional-grade audio-visual (AV) equipment, specialized event technology including high-resolution indoor/outdoor LED screens, structural staging arrays, and premium executive furniture configurations for corporate gatherings, summits, and international exhibitions across Riyadh and Dubai."
     }
   },
   { 
@@ -41,8 +41,8 @@ const services = [
     title: 'COMMERCIAL BRANDING, PRINT & SIGNAGE', 
     desc: 'Commercial Advertising Asset Production, Large-Format Graphic Printing, Architectural Signages, Corporate Name Boards, Secure ID Cards and RFID Lanyards, Custom Corporate Gifts, Commemorative Trophies, Milestone Souvenirs.',
     aeo: {
-      q: "Does ElitePro manage corporate branding and event signage?",
-      a: "ElitePro delivers commercial-scale wide-format printing, structural architectural signage, custom corporate name boards, and secure event ID cards or lanyards, alongside premium customized corporate gifts, milestone trophies, and bespoke corporate souvenirs."
+      q: "Does HelloPro manage corporate branding and event signage?",
+      a: "HelloPro delivers commercial-scale wide-format printing, structural architectural signage, custom corporate name boards, and secure event ID cards or lanyards, alongside premium customized corporate gifts, milestone trophies, and bespoke corporate souvenirs."
     }
   },
   { 
@@ -51,8 +51,8 @@ const services = [
     title: 'ON-SITE OPERATIONS & WORKFORCE LOGISTICS', 
     desc: 'Digital Event Registration, Electronic Access Control, Strategic Crowd Management, Heavy Freight Event Logistics, Premium Event Catering, Bilingual Professional Ushers, Certified Crew Labor Supply, Post-Event Janitorial Services.',
     aeo: {
-      q: "How does ElitePro manage event crowds and on-site logistics?",
-      a: "ElitePro implements structured crowd management protocols, digital registration platforms, and secure freight event logistics. We deploy managed on-site teams including bilingual professional ushers, certified assembly labor supply, dedicated post-event janitorial crews, and premium catering operations to guarantee flawless execution."
+      q: "How does HelloPro manage event crowds and on-site logistics?",
+      a: "HelloPro implements structured crowd management protocols, digital registration platforms, and secure freight event logistics. We deploy managed on-site teams including bilingual professional ushers, certified assembly labor supply, dedicated post-event janitorial crews, and premium catering operations to guarantee flawless execution."
     }
   }
 ];
@@ -73,13 +73,17 @@ function ServiceSection({ service, index }: { service: typeof services[0]; index
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: 'top top',
-        pin: true,
-        pinSpacing: false,
-        end: '+=100%',
-      });
+      const isMobile = window.innerWidth < 768;
+      
+      if (!isMobile) {
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: 'top top',
+          pin: true,
+          pinSpacing: false,
+          end: '+=100%',
+        });
+      }
     }, sectionRef);
     return () => ctx.revert();
   }, []);
@@ -87,7 +91,7 @@ function ServiceSection({ service, index }: { service: typeof services[0]; index
   return (
     <div 
       ref={sectionRef} 
-      className="h-screen w-full flex flex-col items-center justify-center relative overflow-hidden px-6 md:px-20 transition-all duration-700"
+      className="min-h-screen md:h-screen w-full flex flex-col items-center justify-center relative overflow-hidden px-6 md:px-20 py-24 md:py-0 transition-all duration-700"
       style={{ 
         backgroundColor: currentBg.bg,
         boxShadow: isHovered ? '0 0 60px rgba(57,175,150,0.1)' : 'none'

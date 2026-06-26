@@ -96,7 +96,7 @@ export default function LoginPage() {
         className="relative w-full max-w-md bg-brand-dark/50 border border-brand-teal/10 p-12 text-center backdrop-blur-xl"
       >
         <h1 className="text-2xl font-sans font-light tracking-[0.3em] text-white uppercase mb-4">
-          ELITEPRO
+          HELLOPRO
         </h1>
         <p className="text-brand-teal text-[0.7rem] font-medium uppercase tracking-[0.2em] mb-12">
           Admin Gateway

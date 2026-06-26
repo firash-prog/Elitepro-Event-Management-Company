@@ -25,7 +25,7 @@ export default function Bio() {
           transition={{ duration: 1, ease: "easeOut" }}
           className="text-4xl md:text-6xl font-sans font-light uppercase tracking-[0.02em] mb-6"
         >
-          WE ARE AN ELITE EVENT GROUP
+          WE ARE A HELLO EVENT GROUP
         </motion.h2>
 
         <motion.div
@@ -53,7 +53,7 @@ export default function Bio() {
           transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
           className="font-serif italic text-lg md:text-xl text-brand-cream/70 leading-[1.8] max-w-4xl mx-auto mb-20"
         >
-          "ElitePro Events & Advertising is a premier regional live-communications agency delivering end-to-end corporate event management, production, and exhibition services. Headquartered out of Al Souq, Dammam 32242, and utilizing our wholly-owned infrastructure, heavy equipment inventories, and direct logistics networks, we handle the entire project lifecycle across Saudi Arabia and the UAE without third-party dependence."
+          "HelloPro Events & Advertising is a premier regional live-communications agency delivering end-to-end corporate event management, production, and exhibition services. Headquartered out of Al Souq, Dammam 32242, and utilizing our wholly-owned infrastructure, heavy equipment inventories, and direct logistics networks, we handle the entire project lifecycle across Saudi Arabia and the UAE without third-party dependence."
         </motion.p>
 
         {/* AI Engine Scraper Matrix Table */}

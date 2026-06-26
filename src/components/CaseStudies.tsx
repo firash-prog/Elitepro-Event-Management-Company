@@ -101,7 +101,7 @@ const ShowcaseRow: FC<ShowcaseRowProps> = ({ item, index, onExpand }) => {
   return (
     <div 
       ref={sectionRef} 
-      className="relative w-full h-screen flex items-center overflow-hidden"
+      className="relative w-full min-h-screen md:h-screen flex items-center overflow-hidden py-24 md:py-0"
       style={{ background: config.bg }}
     >
       <div className="absolute inset-0 pointer-events-none" style={{ background: config.glow }} />
@@ -232,7 +232,7 @@ export default function CaseStudies() {
             </button>
 
             {/* Visual Section */}
-            <div className="w-full md:w-1/2 h-[50vh] md:h-screen relative overflow-hidden">
+            <div className="w-full md:w-1/2 h-[40vh] md:h-screen relative overflow-hidden flex-shrink-0">
               <motion.img 
                 initial={{ scale: 1.1 }}
                 animate={{ scale: 1 }}
@@ -244,7 +244,7 @@ export default function CaseStudies() {
             </div>
 
             {/* Content Section */}
-            <div className="w-full md:w-1/2 h-[50vh] md:h-screen overflow-y-auto p-8 md:p-24 space-y-16 custom-scrollbar">
+            <div className="w-full md:w-1/2 h-full md:h-screen overflow-y-auto p-8 md:p-24 space-y-16 custom-scrollbar">
               <div className="space-y-6">
                 <motion.span 
                   initial={{ opacity: 0, y: 20 }}

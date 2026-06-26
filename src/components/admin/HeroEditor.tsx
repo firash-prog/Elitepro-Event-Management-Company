@@ -8,7 +8,7 @@ export default function HeroEditor() {
   const [data, setData] = useState({
     video_path: '',
     poster_path: '',
-    label: 'ELITE PRO EVENTS & ADVERTISING',
+    label: 'HELLO PRO EVENTS & ADVERTISING',
     title_line1: 'ARCHITECTS OF',
     title_line2: 'LUXURY EXPERIENCES',
     subtitle: 'We engineer high-fidelity spatial events for forward-thinking brands.',

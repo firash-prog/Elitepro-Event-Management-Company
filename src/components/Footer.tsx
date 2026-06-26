@@ -1,6 +1,10 @@
-import { Instagram, Linkedin, Twitter, Youtube } from 'lucide-react';
+import { Instagram, Linkedin, Twitter, Youtube, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useFirebase } from '../context/FirebaseContext';
 
 export default function Footer() {
+  const { isAdmin } = useFirebase();
+
   return (
     <footer className="bg-brand-dark border-t border-brand-teal/10 pt-20 pb-10 px-6 md:px-20">
       <div className="max-w-7xl mx-auto">
@@ -9,10 +13,10 @@ export default function Footer() {
           {/* Column 1: Brand */}
           <div className="flex flex-col">
             <h2 className="text-xl font-sans font-light tracking-[0.2em] text-white uppercase mb-4">
-              ELITEPRO
+              HELLOPRO
             </h2>
             <p className="text-white text-lg font-light uppercase tracking-widest mb-2">
-              ElitePro Events & Advertising
+              HelloPro Events & Advertising
             </p>
             <p className="text-brand-gray text-sm font-serif italic opacity-60">
               Premier regional live-communications agency
@@ -82,8 +86,17 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="text-center text-[0.8rem] text-brand-gray opacity-40 tracking-wider">
-          <p>© 2024 ElitePro Events & Advertising. All rights reserved.</p>
+        <div className="relative flex flex-col md:flex-row items-center justify-center gap-2 text-center text-[0.8rem] text-brand-gray opacity-40 tracking-wider">
+          <p>© 2024 HelloPro Events & Advertising. All rights reserved.</p>
+          
+          {/* Discreet Admin Link */}
+          <Link 
+            to="/admin" 
+            className={`transition-all duration-700 hover:text-brand-teal p-2 ${isAdmin ? 'opacity-100' : 'opacity-0 hover:opacity-100'}`}
+            title="System Access"
+          >
+            <Lock size={10} />
+          </Link>
         </div>
       </div>
     </footer>
