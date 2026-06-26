@@ -7,11 +7,13 @@ import { useEffect } from 'react';
 import Lenis from 'lenis';
 import Preloader from './components/Preloader';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
+import VideoHero from './components/VideoHero';
+import HubGrid from './components/HubGrid';
 import Bio from './components/Bio';
 import Services from './components/Services';
 import CaseStudies from './components/CaseStudies';
 import Lab from './components/Lab';
+import RFQEngine from './components/RFQEngine';
 import Footer from './components/Footer';
 
 export default function App() {
@@ -37,11 +39,13 @@ export default function App() {
     <main className="relative selection:bg-brand-accent selection:text-brand-dark">
       <Preloader />
       <Navbar />
-      <Hero />
+      <VideoHero />
+      <HubGrid />
       <Bio />
       <Services />
       <CaseStudies />
       <Lab />
+      <RFQEngine />
       <Footer />
     </main>
   );

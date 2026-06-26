@@ -5,22 +5,30 @@ export default function Navbar() {
     <motion.nav
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 1, ease: [0.33, 1, 0.68, 1], delay: 3 }}
-      className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-8 md:px-12"
+      transition={{ duration: 1, ease: [0.33, 1, 0.68, 1], delay: 1 }}
+      className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-8 md:px-20 mix-blend-difference"
     >
-      <div className="flex gap-8 text-xs font-display font-medium uppercase tracking-widest text-brand-gray">
-        <a href="#showcases" className="hover:text-brand-teal transition-colors">showcases</a>
-        <a href="#lab" className="hover:text-brand-teal transition-colors">the lab</a>
+      <div className="flex gap-10 text-[0.7rem] font-medium uppercase tracking-[0.15em] text-white/70">
+        <a href="#showcases" className="hover:text-brand-teal transition-colors">Portfolio</a>
+        <a href="#rfq-engine" className="hover:text-brand-teal transition-colors">RFQ Engine</a>
       </div>
 
       <div className="absolute left-1/2 -translate-x-1/2">
-        <a href="/" className="text-xl font-display font-black tracking-tighter text-brand-teal">
-          ELITE
+        <a href="/" className="text-xl font-sans font-light tracking-[0.2em] text-white uppercase">
+          ELITEPRO
         </a>
       </div>
 
-      <div className="text-xs font-display font-medium uppercase tracking-widest text-brand-gray">
-        <a href="#inquire" className="hover:text-brand-teal transition-colors underline underline-offset-4">inquire</a>
+      <div className="flex items-center gap-10">
+        <div className="hidden md:flex gap-6 text-[0.65rem] font-medium uppercase tracking-[0.1em] text-white/40">
+          <a href="https://sa.linkedin.com/company/digital-soul-ksa" target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal transition-colors">LinkedIn</a>
+          <a href="https://www.instagram.com/eliteproevents" target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal transition-colors">Instagram</a>
+          <a href="https://x.com/eliteproevents" target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal transition-colors">X</a>
+          <a href="https://youtube.com/@EliteproEventsAdvertising" target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal transition-colors">YouTube</a>
+        </div>
+        <div className="text-[0.7rem] font-medium uppercase tracking-[0.15em] text-white/70">
+          <a href="#rfq-engine" className="hover:text-brand-teal transition-colors px-6 py-2 border border-brand-teal/30 hover:border-brand-teal transition-all">Launch RFQ</a>
+        </div>
       </div>
     </motion.nav>
   );
