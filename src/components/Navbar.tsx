@@ -20,12 +20,6 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-10">
-        <div className="hidden md:flex gap-6 text-[0.65rem] font-medium uppercase tracking-[0.1em] text-white/40">
-          <a href="https://sa.linkedin.com/company/digital-soul-ksa" target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal transition-colors">LinkedIn</a>
-          <a href="https://www.instagram.com/eliteproevents" target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal transition-colors">Instagram</a>
-          <a href="https://x.com/eliteproevents" target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal transition-colors">X</a>
-          <a href="https://youtube.com/@EliteproEventsAdvertising" target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal transition-colors">YouTube</a>
-        </div>
         <div className="text-[0.7rem] font-medium uppercase tracking-[0.15em] text-white/70">
           <a href="#rfq-engine" className="hover:text-brand-teal transition-colors px-6 py-2 border border-brand-teal/30 hover:border-brand-teal transition-all">Launch RFQ</a>
         </div>
