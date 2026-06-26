@@ -1,0 +1,77 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Catch-all deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // Admins collection
+    match /admins/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if false; // Only manageable via console
+    }
+
+    // Publicly readable content, admin-only write
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /services_matrix/{itemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /service_hubs/{hubId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /portfolio_cases/{caseId} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      match /images/{imageId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+    }
+
+    match /quad_hubs/{hubId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /lab_items/{itemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

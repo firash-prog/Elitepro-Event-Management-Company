@@ -4,6 +4,7 @@
  */
 
 import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Lenis from 'lenis';
 import Preloader from './components/Preloader';
 import Navbar from './components/Navbar';
@@ -16,8 +17,9 @@ import YouTubeGrid from './components/YouTubeGrid';
 import Lab from './components/Lab';
 import RFQEngine from './components/RFQEngine';
 import Footer from './components/Footer';
+import AdminPanel from './components/admin/AdminPanel';
 
-export default function App() {
+function PublicSite() {
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -50,5 +52,16 @@ export default function App() {
       <RFQEngine />
       <Footer />
     </main>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/admin/*" element={<AdminPanel />} />
+        <Route path="/*" element={<PublicSite />} />
+      </Routes>
+    </Router>
   );
 }

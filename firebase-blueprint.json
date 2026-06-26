@@ -1,0 +1,160 @@
+{
+  "entities": {
+    "HeroSettings": {
+      "title": "Hero Settings",
+      "description": "Configuration for the hero section including video and text content.",
+      "type": "object",
+      "properties": {
+        "video_path": { "type": "string", "description": "URL or path to the hero video" },
+        "poster_path": { "type": "string", "description": "URL or path to the video poster image" },
+        "label": { "type": "string" },
+        "title_line1": { "type": "string" },
+        "title_line2": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "cta_text": { "type": "string" },
+        "cta_link": { "type": "string" },
+        "is_active": { "type": "boolean" }
+      },
+      "required": ["video_path", "poster_path", "title_line1", "title_line2"]
+    },
+    "AboutSection": {
+      "title": "About Section",
+      "description": "Content for the about us section.",
+      "type": "object",
+      "properties": {
+        "headline": { "type": "string" },
+        "tagline": { "type": "string" },
+        "description": { "type": "string" },
+        "is_active": { "type": "boolean" }
+      }
+    },
+    "ServiceMatrixItem": {
+      "title": "Service Matrix Item",
+      "description": "A single row in the services capabilities matrix.",
+      "type": "object",
+      "properties": {
+        "vertical": { "type": "string" },
+        "capabilities": { "type": "string" },
+        "hubs": { "type": "string" },
+        "sort_order": { "type": "integer" }
+      }
+    },
+    "ServiceHub": {
+      "title": "Service Hub",
+      "description": "Details for a specific service hub (e.g. Hub A).",
+      "type": "object",
+      "properties": {
+        "index_num": { "type": "string" },
+        "hub_code": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "aeo_question": { "type": "string" },
+        "aeo_answer": { "type": "string" },
+        "background_color": { "type": "string" },
+        "sort_order": { "type": "integer" },
+        "is_active": { "type": "boolean" }
+      }
+    },
+    "PortfolioCase": {
+      "title": "Portfolio Case",
+      "description": "A case study in the portfolio.",
+      "type": "object",
+      "properties": {
+        "index_num": { "type": "string" },
+        "category": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "background_color": { "type": "string" },
+        "is_active": { "type": "boolean" },
+        "sort_order": { "type": "integer" }
+      }
+    },
+    "PortfolioImage": {
+      "title": "Portfolio Image",
+      "description": "An image associated with a portfolio case.",
+      "type": "object",
+      "properties": {
+        "case_id": { "type": "string" },
+        "image_path": { "type": "string" },
+        "sort_order": { "type": "integer" },
+        "is_active": { "type": "boolean" }
+      }
+    },
+    "QuadHub": {
+      "title": "Quad Hub",
+      "description": "One of the 4 city operational hubs.",
+      "type": "object",
+      "properties": {
+        "city": { "type": "string" },
+        "tag": { "type": "string" },
+        "description": { "type": "string" },
+        "sort_order": { "type": "integer" },
+        "is_active": { "type": "boolean" }
+      }
+    },
+    "LabItem": {
+      "title": "Lab Item",
+      "description": "An experimental project in The Lab.",
+      "type": "object",
+      "properties": {
+        "label": { "type": "string" },
+        "title": { "type": "string" },
+        "sort_order": { "type": "integer" },
+        "is_active": { "type": "boolean" }
+      }
+    },
+    "RFQSettings": {
+      "title": "RFQ Settings",
+      "description": "Settings for the RFQ engine steps and contact info.",
+      "type": "object",
+      "properties": {
+        "step1_title": { "type": "string" },
+        "step1_prompt": { "type": "string" },
+        "step2_title": { "type": "string" },
+        "step2_prompt": { "type": "string" },
+        "step3_title": { "type": "string" },
+        "step3_prompt": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" }
+      }
+    },
+    "SiteSettings": {
+      "title": "Site Settings",
+      "description": "Global settings for the website.",
+      "type": "object",
+      "properties": {
+        "site_title": { "type": "string" },
+        "meta_description": { "type": "string" },
+        "contact_email": { "type": "string" },
+        "contact_phone": { "type": "string" },
+        "address": { "type": "string" },
+        "instagram": { "type": "string" },
+        "linkedin": { "type": "string" },
+        "twitter": { "type": "string" },
+        "youtube": { "type": "string" }
+      }
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "User authorized for admin access.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "editor"] }
+      }
+    }
+  },
+  "firestore": {
+    "settings/hero": { "schema": "HeroSettings", "description": "Hero section configuration" },
+    "settings/about": { "schema": "AboutSection", "description": "About section content" },
+    "settings/rfq": { "schema": "RFQSettings", "description": "RFQ engine configuration" },
+    "settings/site": { "schema": "SiteSettings", "description": "Global site settings" },
+    "services_matrix/{itemId}": { "schema": "ServiceMatrixItem", "description": "Service capabilities matrix rows" },
+    "service_hubs/{hubId}": { "schema": "ServiceHub", "description": "Service hub detail sections" },
+    "portfolio_cases/{caseId}": { "schema": "PortfolioCase", "description": "Portfolio case study entries" },
+    "portfolio_cases/{caseId}/images/{imageId}": { "schema": "PortfolioImage", "description": "Images for a portfolio case" },
+    "quad_hubs/{hubId}": { "schema": "QuadHub", "description": "City operational hubs" },
+    "lab_items/{itemId}": { "schema": "LabItem", "description": "Experimental lab project items" },
+    "admins/{userId}": { "schema": "Admin", "description": "Authorized admin users" }
+  }
+}
