@@ -80,6 +80,19 @@ async function startServer() {
       appType: "spa",
     });
     app.use(vite.middlewares);
+    
+    // Explicit fallback for SPA in dev mode
+    app.use("*", async (req, res, next) => {
+      if (req.originalUrl.startsWith("/api")) return next();
+      
+      try {
+        let template = fs.readFileSync(path.resolve(ROOT, "index.html"), "utf-8");
+        template = await vite.transformIndexHtml(req.originalUrl, template);
+        res.status(200).set({ "Content-Type": "text/html" }).end(template);
+      } catch (e) {
+        next(e);
+      }
+    });
   } else {
     // Production: serve built static files from dist
     const distPath = path.join(ROOT, "dist");

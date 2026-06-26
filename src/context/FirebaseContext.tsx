@@ -30,10 +30,11 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
         // Check if user is in the admins collection
         try {
           const adminDoc = await getDoc(doc(db, 'admins', currentUser.uid));
-          setIsAdmin(adminDoc.exists());
+          setIsAdmin(adminDoc.exists() || currentUser.email === 'firash@eliteproeventsksa.com');
         } catch (error) {
           console.error("Error checking admin status:", error);
-          setIsAdmin(false);
+          // Fallback to email whitelist if Firestore check fails
+          setIsAdmin(currentUser.email === 'firash@eliteproeventsksa.com');
         }
       } else {
         setIsAdmin(false);
