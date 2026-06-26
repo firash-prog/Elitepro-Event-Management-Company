@@ -12,6 +12,7 @@ import HubGrid from './components/HubGrid';
 import Bio from './components/Bio';
 import Services from './components/Services';
 import CaseStudies from './components/CaseStudies';
+import YouTubeGrid from './components/YouTubeGrid';
 import Lab from './components/Lab';
 import RFQEngine from './components/RFQEngine';
 import Footer from './components/Footer';
@@ -40,10 +41,11 @@ export default function App() {
       <Preloader />
       <Navbar />
       <VideoHero />
-      <HubGrid />
       <Bio />
       <Services />
       <CaseStudies />
+      <HubGrid />
+      <YouTubeGrid />
       <Lab />
       <RFQEngine />
       <Footer />

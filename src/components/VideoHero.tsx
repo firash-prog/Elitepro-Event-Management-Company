@@ -1,7 +1,39 @@
+import { useEffect, useRef } from 'react';
+
 export default function VideoHero() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (videoRef.current) {
+          if (entry.isIntersecting) {
+            videoRef.current.play().catch(() => {
+              // Handle potential play() rejection (e.g. user hasn't interacted yet)
+            });
+          } else {
+            videoRef.current.pause();
+          }
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <section className="hero-video">
+    <section className="hero-video" style={{ zIndex: 0 }}>
       <video 
+        ref={videoRef}
         autoPlay 
         muted 
         loop 
@@ -17,31 +49,26 @@ export default function VideoHero() {
       
       <div className="hero-video__content">
         <span className="hero-video__label">ELITE PRO EVENTS & ADVERTISING</span>
-        <div className="hero-video__line" />
         <h1 className="hero-video__title">
-          TURNKEY CORPORATE EVENT MANAGEMENT<br />
-          & EXHIBITION PRODUCTION ACROSS<br />
-          KSA & UAE
+          ARCHITECTS OF<br />LUXURY EXPERIENCES
         </h1>
         <p className="hero-video__subtitle">
-          End-to-end event design, physical fabrication, technical logistics, 
-          and on-site operations serving Riyadh, Jeddah, Dammam, and Dubai.
+          We engineer high-fidelity spatial events for forward-thinking brands.
         </p>
         <a 
-          href="#rfq-engine" 
+          href="#showcases" 
           className="hero-video__cta"
           onClick={(e) => {
             e.preventDefault();
-            document.getElementById('rfq-engine')?.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('showcases')?.scrollIntoView({ behavior: 'smooth' });
           }}
         >
-          LAUNCH INTERACTIVE RFQ ENGINE
+          EXPLORE OUR WORK
         </a>
       </div>
       
       <div className="hero-video__scroll">
         <span>SCROLL</span>
-        <div className="hero-video__chevron" />
       </div>
     </section>
   );
