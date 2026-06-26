@@ -26,8 +26,14 @@ export default function LoginPage() {
     try {
       const adminDoc = await getDoc(doc(db, 'admins', user.uid));
       return adminDoc.exists();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Firestore check failed:", err);
+      // If Firestore is unavailable, we still allow the whitelisted user
+      if (user.email === 'firash@eliteproeventsksa.com') return true;
+      
+      if (err.code === 'unavailable') {
+        throw new Error("Unable to reach authentication server. Please check your connection or try again later.");
+      }
       return false;
     }
   };

@@ -17,7 +17,10 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email == 'firash@eliteproeventsksa.com'
+      );
     }
 
     function isOwner(userId) {
@@ -42,6 +45,16 @@ service cloud.firestore {
     match /settings/{docId} {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    match /portfolio/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /rfqs/{rfqId} {
+      allow create: if true; // Public can submit RFQs
+      allow read, update, delete: if isAdmin();
     }
 
     match /services_matrix/{itemId} {

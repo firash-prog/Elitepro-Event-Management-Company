@@ -29,12 +29,18 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
       if (currentUser) {
         // Check if user is in the admins collection
         try {
+          // Add a timeout or check if we are in a valid state
           const adminDoc = await getDoc(doc(db, 'admins', currentUser.uid));
           setIsAdmin(adminDoc.exists() || currentUser.email === 'firash@eliteproeventsksa.com');
-        } catch (error) {
+        } catch (error: any) {
           console.error("Error checking admin status:", error);
-          // Fallback to email whitelist if Firestore check fails
-          setIsAdmin(currentUser.email === 'firash@eliteproeventsksa.com');
+          // Fallback to email whitelist if Firestore check fails (e.g. offline/unavailable)
+          const isWhitelisted = currentUser.email === 'firash@eliteproeventsksa.com';
+          setIsAdmin(isWhitelisted);
+          
+          if (error.code === 'unavailable') {
+            console.warn("Firestore unavailable - operating in degraded mode");
+          }
         }
       } else {
         setIsAdmin(false);

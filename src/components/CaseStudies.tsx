@@ -1,8 +1,10 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, FC } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Maximize2, MapPin, Calendar, User, ArrowRight } from 'lucide-react';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,67 +12,26 @@ interface CaseStudy {
   id: string;
   title: string;
   category: string;
-  mainImage: string;
-  sideImage1: string;
-  sideImage2: string;
-  desc: string;
+  image_path: string;
+  description: string;
   location: string;
-  date: string;
-  client: string;
+  year: string;
+  client?: string;
+  is_featured?: boolean;
 }
 
-const showcases: CaseStudy[] = [
-  {
-    id: '01',
-    title: 'GLOBAL INNOVATION SUMMIT',
-    category: 'TECH EXPERIENTIAL',
-    mainImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1000',
-    sideImage1: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=500',
-    sideImage2: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=500',
-    desc: 'Immersive mainstage environment for tech industry change-makers.',
-    location: 'Riyadh, KSA',
-    date: 'March 2024',
-    client: 'NeoTech Group'
-  },
-  {
-    id: '02',
-    title: 'COUTURE LUXURY GALA',
-    category: 'PREMIUM HOSPITALITY',
-    mainImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1000',
-    sideImage1: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?q=80&w=500',
-    sideImage2: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=500',
-    desc: 'High-fidelity spatial events for fashion & lifestyle pioneers.',
-    location: 'Dubai, UAE',
-    date: 'January 2024',
-    client: 'Vogue Arabia'
-  },
-  {
-    id: '03',
-    title: 'NEXT-GEN AUTOMOTIVE ROLLOUT',
-    category: 'KINETIC STAGE MECHANICS',
-    mainImage: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=1000',
-    sideImage1: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=500',
-    sideImage2: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=500',
-    desc: 'Bespoke kinetic stages and high-production value live system arrays.',
-    location: 'Jeddah, KSA',
-    date: 'February 2024',
-    client: 'LuxeMotors'
-  }
-];
-
-function ShowcaseRow({ item, index, onExpand, onImageClick }: { 
-  item: CaseStudy; 
-  index: number; 
+interface ShowcaseRowProps {
+  item: CaseStudy;
+  index: number;
   onExpand: (item: CaseStudy) => void;
-  onImageClick: (url: string, allImages: string[]) => void;
-  key?: string | number;
-}) {
+}
+
+const ShowcaseRow: FC<ShowcaseRowProps> = ({ item, index, onExpand }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const imageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const indexRefs = useRef<(HTMLDivElement | null)[]>([]);
   const lineRef = useRef<HTMLDivElement>(null);
-  const [isHoveringImage, setIsHoveringImage] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const bgConfigs = [
     { 
@@ -91,77 +52,45 @@ function ShowcaseRow({ item, index, onExpand, onImageClick }: {
   ];
 
   const config = bgConfigs[index % bgConfigs.length];
-  const accentYellow = '#fde12b';
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 768px)", () => {
-        // Pinning behavior
         ScrollTrigger.create({
           trigger: sectionRef.current,
           start: 'top top',
-          end: '+=150%',
+          end: '+=100%',
           pin: true,
           pinSpacing: true,
           anticipatePin: 1,
         });
 
-        // Entrance Animations
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          }
-        });
-
-        tl.fromTo(imageRefs.current, 
-          { opacity: 0, y: 80, scale: 0.95 },
+        gsap.fromTo(imageRef.current, 
+          { opacity: 0, x: 100, scale: 0.9 },
           { 
-            opacity: 1, 
-            y: 0, 
-            scale: 1, 
-            duration: 0.9, 
-            ease: 'power2.out',
-            stagger: 0.2 
+            opacity: 1, x: 0, scale: 1, 
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 80%',
+              end: 'top 20%',
+              scrub: 1
+            }
           }
-        )
-        .fromTo(contentRef.current,
-          { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' },
-          "-=0.5"
-        )
-        .fromTo(indexRefs.current,
-          { opacity: 0 },
-          { opacity: 0.6, duration: 0.5 },
-          "-=0.3"
-        )
-        .fromTo(lineRef.current,
-          { width: 0 },
-          { width: 40, duration: 0.6 },
-          "-=0.2"
         );
-      });
 
-      mm.add("(max-width: 767px)", () => {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
+        gsap.fromTo(contentRef.current,
+          { opacity: 0, x: -50 },
+          { 
+            opacity: 1, x: 0,
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 80%',
+              end: 'top 20%',
+              scrub: 1
+            }
           }
-        });
-
-        tl.fromTo(imageRefs.current, 
-          { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, duration: 0.8, stagger: 0.1 }
-        )
-        .fromTo(contentRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.6 },
-          "-=0.4"
         );
       });
     }, sectionRef);
@@ -172,310 +101,231 @@ function ShowcaseRow({ item, index, onExpand, onImageClick }: {
   return (
     <div 
       ref={sectionRef} 
-      className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: config.bg, zIndex: (index + 1) * 10 }}
+      className="relative w-full h-screen flex items-center overflow-hidden"
+      style={{ background: config.bg }}
     >
-      {/* Soft Ambient Glow */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: config.glow }}
-      />
-
-      {/* Index Numbers */}
-      <div ref={el => indexRefs.current[0] = el} className="absolute top-[40px] left-[60px] z-50 hidden md:block">
-        <span className="font-serif text-xl italic" style={{ color: 'rgba(57,175,150,0.5)' }}>{item.id}</span>
-      </div>
-      <div ref={el => indexRefs.current[1] = el} className="absolute bottom-[40px] right-[60px] z-50 hidden md:block">
-        <span className="font-serif text-xl italic" style={{ color: 'rgba(57,175,150,0.5)' }}>/0{showcases.length}</span>
-      </div>
-
-      {/* Collage Layout - Desktop Only */}
-      <div className="absolute inset-0 w-full h-full z-10 hidden md:block">
-        {/* Image 1: SideImage 1 - Left Large */}
-        <div 
-          ref={el => imageRefs.current[0] = el}
-          onMouseEnter={() => setIsHoveringImage(true)}
-          onMouseLeave={() => setIsHoveringImage(false)}
-          onClick={() => onImageClick(item.sideImage1, [item.sideImage1, item.mainImage, item.sideImage2])}
-          className="absolute left-[5%] top-[20%] w-[50%] h-[60%] pointer-events-auto overflow-hidden group cursor-pointer"
-        >
-          <img 
-            src={item.sideImage1} 
-            alt="" 
-            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-[1.03]"
-            style={{ filter: isHoveringImage ? 'saturate(1.1)' : 'saturate(0.9)' }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <Maximize2 className="text-white/80" size={32} />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: config.glow }} />
+      
+      <div className="container mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
+        <div ref={contentRef} className="space-y-8">
+          <div className="space-y-4">
+            <motion.span 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              className="text-[0.7rem] uppercase tracking-[0.3em] font-bold"
+              style={{ color: config.accent }}
+            >
+              {item.category}
+            </motion.span>
+            <div ref={lineRef} className="h-px w-12" style={{ background: config.accent }} />
           </div>
-        </div>
 
-        {/* Image 2: MainImage - Center Right Medium */}
-        <div 
-          ref={el => imageRefs.current[1] = el}
-          onMouseEnter={() => setIsHoveringImage(true)}
-          onMouseLeave={() => setIsHoveringImage(false)}
-          onClick={() => onImageClick(item.mainImage, [item.sideImage1, item.mainImage, item.sideImage2])}
-          className="absolute right-[8%] top-[10%] w-[40%] h-[45%] z-20 pointer-events-auto overflow-hidden group cursor-pointer"
-        >
-          <img 
-            src={item.mainImage} 
-            alt="" 
-            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-[1.03]"
-            style={{ filter: isHoveringImage ? 'saturate(1.1)' : 'saturate(0.9)' }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <Maximize2 className="text-white/80" size={32} />
-          </div>
-        </div>
+          <h3 className="text-5xl md:text-8xl font-sans font-light tracking-tight text-white uppercase leading-[0.9]">
+            {item.title}
+          </h3>
 
-        {/* Image 3: SideImage 2 - Bottom Right Medium */}
-        <div 
-          ref={el => imageRefs.current[2] = el}
-          onMouseEnter={() => setIsHoveringImage(true)}
-          onMouseLeave={() => setIsHoveringImage(false)}
-          onClick={() => onImageClick(item.sideImage2, [item.sideImage1, item.mainImage, item.sideImage2])}
-          className="absolute right-[5%] bottom-[15%] w-[35%] h-[50%] z-30 pointer-events-auto overflow-hidden group cursor-pointer"
-        >
-          <img 
-            src={item.sideImage2} 
-            alt="" 
-            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-[1.03]"
-            style={{ filter: isHoveringImage ? 'saturate(1.1)' : 'saturate(0.9)' }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <Maximize2 className="text-white/80" size={32} />
-          </div>
-        </div>
-      </div>
+          <p className="text-white/50 text-lg font-serif italic max-w-md leading-relaxed">
+            {item.description.slice(0, 150)}...
+          </p>
 
-      {/* Mobile Image Stack */}
-      <div className="flex flex-col gap-4 w-full px-6 md:hidden z-10 mb-8 max-h-[50vh] overflow-y-auto">
-        <img src={item.sideImage1} className="w-full aspect-[4/3] object-cover" alt="" />
-        <img src={item.mainImage} className="w-full aspect-[4/3] object-cover" alt="" />
-        <img src={item.sideImage2} className="w-full aspect-[4/3] object-cover" alt="" />
-      </div>
-
-      {/* Content */}
-      <div 
-        ref={contentRef} 
-        className="relative z-40 text-center px-6 pointer-events-auto cursor-pointer group"
-        onClick={() => onExpand(item)}
-      >
-        <div className="flex flex-col items-center mb-4">
-          <span 
-            className="font-sans text-[0.75rem] font-medium uppercase tracking-[0.15em] mb-2 transition-colors duration-300"
-            style={{ color: isHoveringImage ? accentYellow : config.accent }}
-          >
-            {item.category}
-          </span>
-          <div 
-            ref={lineRef}
-            className="h-px"
-            style={{ 
-              background: `linear-gradient(90deg, ${config.accent}, transparent)`
-            }}
-          />
-        </div>
-        <h3 
-          className="font-sans uppercase leading-[0.95] tracking-[0.02em] transition-colors duration-500"
-          style={{ 
-            fontSize: 'clamp(2.5rem, 7vw, 6rem)', 
-            fontWeight: 300,
-            color: isHoveringImage ? '#39af96' : '#ffffff'
-          }}
-        >
-          {item.title}
-        </h3>
-        <p className="font-serif italic text-brand-gray text-lg md:text-xl mt-8 max-w-xl mx-auto">
-          {item.desc}
-        </p>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          whileHover={{ opacity: 1, y: 0 }}
-          className="mt-12 opacity-0 group-hover:opacity-100 transition-all duration-300"
-        >
           <button 
-            className="px-8 py-3 border border-brand-teal/40 text-brand-teal text-[0.75rem] uppercase tracking-widest hover:bg-brand-teal/10 hover:border-brand-teal transition-all"
+            onClick={() => onExpand(item)}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="group flex items-center gap-4 text-white text-[0.7rem] uppercase tracking-[0.2em] font-bold border border-white/10 px-8 py-4 hover:border-brand-teal transition-all"
           >
-            View Project
+            Explore Case Study
+            <ArrowRight size={16} className={`transition-transform duration-300 ${isHovered ? 'translate-x-2' : ''}`} />
           </button>
-        </motion.div>
+        </div>
+
+        <div 
+          ref={imageRef}
+          onClick={() => onExpand(item)}
+          className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden cursor-pointer group"
+        >
+          <img 
+            src={item.image_path} 
+            alt={item.title} 
+            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-brand-dark/20 group-hover:bg-transparent transition-colors duration-500" />
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            <div className="p-4 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+              <Maximize2 size={24} className="text-white" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute bottom-12 left-12 hidden md:block">
+        <span className="text-white/10 text-9xl font-sans font-bold leading-none select-none">
+          0{index + 1}
+        </span>
       </div>
     </div>
   );
 }
 
 export default function CaseStudies() {
+  const [projects, setProjects] = useState<CaseStudy[]>([]);
+  const [loading, setLoading] = useState(true);
   const [expandedStudy, setExpandedStudy] = useState<CaseStudy | null>(null);
-  const [lightbox, setLightbox] = useState<{ url: string; all: string[] } | null>(null);
 
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setExpandedStudy(null);
-        setLightbox(null);
-      }
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
+    const q = query(collection(db, 'portfolio'), orderBy('order', 'asc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as CaseStudy[];
+      setProjects(docs);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const handlePrev = () => {
-    if (!lightbox) return;
-    const idx = lightbox.all.indexOf(lightbox.url);
-    const prevIdx = (idx - 1 + lightbox.all.length) % lightbox.all.length;
-    setLightbox({ ...lightbox, url: lightbox.all[prevIdx] });
-  };
+  useEffect(() => {
+    if (expandedStudy) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [expandedStudy]);
 
-  const handleNext = () => {
-    if (!lightbox) return;
-    const idx = lightbox.all.indexOf(lightbox.url);
-    const nextIdx = (idx + 1) % lightbox.all.length;
-    setLightbox({ ...lightbox, url: lightbox.all[nextIdx] });
-  };
+  if (loading) {
+    return (
+      <div className="h-screen bg-brand-dark flex items-center justify-center">
+        <div className="text-white/20 uppercase tracking-[0.5em] text-[0.6rem] animate-pulse">
+          Synchronizing Spatial Data
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <section id="showcases" className="bg-brand-dark overflow-hidden relative">
-      {showcases.map((item, i) => (
+    <section id="showcases" className="bg-brand-dark relative">
+      {projects.map((item: CaseStudy, i: number) => (
         <ShowcaseRow 
           key={item.id} 
           item={item} 
           index={i} 
           onExpand={setExpandedStudy}
-          onImageClick={(url, all) => setLightbox({ url, all })}
         />
       ))}
 
-      {/* Expanded View Overlay */}
       <AnimatePresence>
         {expandedStudy && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-20 overflow-y-auto"
+            className="fixed inset-0 z-[100] flex flex-col md:flex-row bg-brand-dark overflow-hidden"
           >
-            <div 
-              className="absolute inset-0 bg-black/95 backdrop-blur-sm"
+            {/* Close Button */}
+            <button 
               onClick={() => setExpandedStudy(null)}
-            />
-            
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="relative w-full max-w-6xl bg-brand-dark/50 border border-brand-teal/10 overflow-hidden z-10"
+              className="absolute top-8 right-8 z-[110] p-4 bg-white/5 border border-white/10 text-white hover:bg-brand-teal hover:text-black transition-all"
             >
-              <button 
-                onClick={() => setExpandedStudy(null)}
-                className="absolute top-6 right-6 z-50 p-2 text-white/50 hover:text-white hover:bg-white/10 transition-all"
-              >
-                <X size={24} />
-              </button>
+              <X size={24} />
+            </button>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
-                {/* Image Gallery */}
-                <div className="relative h-[400px] lg:h-full overflow-hidden">
-                  <img 
-                    src={expandedStudy.mainImage} 
-                    alt={expandedStudy.title}
-                    className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-700"
-                    onClick={() => setLightbox({ url: expandedStudy.mainImage, all: [expandedStudy.mainImage, expandedStudy.sideImage1, expandedStudy.sideImage2] })}
-                  />
-                </div>
+            {/* Visual Section */}
+            <div className="w-full md:w-1/2 h-[50vh] md:h-screen relative overflow-hidden">
+              <motion.img 
+                initial={{ scale: 1.1 }}
+                animate={{ scale: 1 }}
+                src={expandedStudy.image_path} 
+                className="w-full h-full object-cover"
+                alt=""
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent md:hidden" />
+            </div>
 
-                {/* Info */}
-                <div className="p-8 md:p-12 flex flex-col justify-center">
-                  <span className="text-brand-teal text-[0.75rem] font-medium tracking-[0.2em] uppercase mb-4">
-                    {expandedStudy.category}
-                  </span>
-                  <h2 className="text-white text-4xl md:text-6xl font-sans font-light tracking-tight uppercase leading-[0.9] mb-8">
-                    {expandedStudy.title}
-                  </h2>
-                  <p className="text-brand-gray text-lg font-serif italic mb-12">
-                    {expandedStudy.desc}
-                  </p>
-
-                  <div className="grid grid-cols-3 gap-8 mb-12">
-                    <div>
-                      <p className="text-brand-teal text-[0.6rem] uppercase tracking-widest mb-2">Location</p>
-                      <p className="text-white text-sm uppercase tracking-tight">{expandedStudy.location}</p>
-                    </div>
-                    <div>
-                      <p className="text-brand-teal text-[0.6rem] uppercase tracking-widest mb-2">Date</p>
-                      <p className="text-white text-sm uppercase tracking-tight">{expandedStudy.date}</p>
-                    </div>
-                    <div>
-                      <p className="text-brand-teal text-[0.6rem] uppercase tracking-widest mb-2">Client</p>
-                      <p className="text-white text-sm uppercase tracking-tight">{expandedStudy.client}</p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 h-[120px]">
-                    <img 
-                      src={expandedStudy.sideImage1} 
-                      className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => setLightbox({ url: expandedStudy.sideImage1, all: [expandedStudy.mainImage, expandedStudy.sideImage1, expandedStudy.sideImage2] })}
-                    />
-                    <img 
-                      src={expandedStudy.sideImage2} 
-                      className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => setLightbox({ url: expandedStudy.sideImage2, all: [expandedStudy.mainImage, expandedStudy.sideImage1, expandedStudy.sideImage2] })}
-                    />
-                  </div>
-                </div>
+            {/* Content Section */}
+            <div className="w-full md:w-1/2 h-[50vh] md:h-screen overflow-y-auto p-8 md:p-24 space-y-16 custom-scrollbar">
+              <div className="space-y-6">
+                <motion.span 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-brand-teal text-[0.7rem] uppercase tracking-[0.4em] font-bold block"
+                >
+                  {expandedStudy.category}
+                </motion.span>
+                <motion.h2 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="text-5xl md:text-7xl font-sans font-light tracking-tight text-white uppercase leading-none"
+                >
+                  {expandedStudy.title}
+                </motion.h2>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
-      {/* Lightbox Overlay */}
-      <AnimatePresence>
-        {lightbox && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/95"
-          >
-            <div className="absolute inset-0" onClick={() => setLightbox(null)} />
-            
-            <button 
-              onClick={() => setLightbox(null)}
-              className="absolute top-6 right-6 z-[210] p-3 text-white/50 hover:text-white hover:bg-white/10 transition-all"
-            >
-              <X size={32} />
-            </button>
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="grid grid-cols-2 gap-8 py-8 border-y border-white/5"
+              >
+                <div className="space-y-2">
+                  <span className="flex items-center gap-2 text-[0.6rem] text-white/30 uppercase tracking-widest">
+                    <MapPin size={12} className="text-brand-teal" /> Location
+                  </span>
+                  <p className="text-white text-sm uppercase tracking-tight font-medium">{expandedStudy.location}</p>
+                </div>
+                <div className="space-y-2">
+                  <span className="flex items-center gap-2 text-[0.6rem] text-white/30 uppercase tracking-widest">
+                    <Calendar size={12} className="text-brand-teal" /> Timeline
+                  </span>
+                  <p className="text-white text-sm uppercase tracking-tight font-medium">{expandedStudy.year}</p>
+                </div>
+                {expandedStudy.client && (
+                  <div className="space-y-2">
+                    <span className="flex items-center gap-2 text-[0.6rem] text-white/30 uppercase tracking-widest">
+                      <User size={12} className="text-brand-teal" /> Client
+                    </span>
+                    <p className="text-white text-sm uppercase tracking-tight font-medium">{expandedStudy.client}</p>
+                  </div>
+                )}
+              </motion.div>
 
-            <button 
-              onClick={handlePrev}
-              className="absolute left-6 top-1/2 -translate-y-1/2 z-[210] p-4 text-white/30 hover:text-white transition-all"
-            >
-              <ChevronLeft size={48} />
-            </button>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="space-y-8"
+              >
+                <h4 className="text-[0.6rem] text-brand-teal uppercase tracking-widest font-bold">The Challenge & Vision</h4>
+                <p className="text-white/60 text-lg font-serif leading-relaxed italic">
+                  {expandedStudy.description}
+                </p>
+              </motion.div>
 
-            <button 
-              onClick={handleNext}
-              className="absolute right-6 top-1/2 -translate-y-1/2 z-[210] p-4 text-white/30 hover:text-white transition-all"
-            >
-              <ChevronRight size={48} />
-            </button>
-
-            <motion.img 
-              key={lightbox.url}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              src={lightbox.url}
-              className="max-w-full max-h-full object-contain relative z-[205]"
-            />
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="p-10 bg-white/[0.02] border border-white/5 space-y-6"
+              >
+                <h4 className="text-[0.6rem] text-white uppercase tracking-widest font-bold">Spatial Engineering Specs</h4>
+                <div className="space-y-4 text-[0.7rem] text-white/40 uppercase tracking-widest">
+                  <p className="flex justify-between border-b border-white/5 pb-2">
+                    <span>Lighting Fidelity</span>
+                    <span className="text-brand-teal">DMX-512 / Art-Net</span>
+                  </p>
+                  <p className="flex justify-between border-b border-white/5 pb-2">
+                    <span>Visual Array</span>
+                    <span className="text-brand-teal">P2.5 LED / 8K Uncompressed</span>
+                  </p>
+                  <p className="flex justify-between border-b border-white/5 pb-2">
+                    <span>Audio Geometry</span>
+                    <span className="text-brand-teal">L-Acoustics K2 System</span>
+                  </p>
+                </div>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

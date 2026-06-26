@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Video, 
@@ -17,38 +18,37 @@ import { signOut } from 'firebase/auth';
 interface SidebarItemProps {
   icon: any;
   label: string;
-  active: boolean;
-  onClick: () => void;
+  to: string;
   key?: string;
 }
 
-function SidebarItem({ icon: Icon, label, active, onClick }: SidebarItemProps) {
+function SidebarItem({ icon: Icon, label, to }: SidebarItemProps) {
   return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center gap-3 px-6 py-4 transition-all duration-300 border-l-2 ${
-        active 
+    <NavLink
+      to={to}
+      className={({ isActive }) => `w-full flex items-center gap-3 px-6 py-4 transition-all duration-300 border-l-2 ${
+        isActive 
           ? 'bg-brand-teal/5 text-brand-teal border-brand-teal' 
           : 'text-white/50 border-transparent hover:bg-white/5 hover:text-white'
       }`}
     >
       <Icon size={18} />
       <span className="text-[0.7rem] uppercase tracking-[0.2em] font-medium">{label}</span>
-    </button>
+    </NavLink>
   );
 }
 
-export default function AdminSidebar({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (tab: string) => void }) {
+export default function AdminSidebar() {
   const menuItems = [
-    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { id: 'hero', icon: Video, label: 'Hero' },
-    { id: 'about', icon: Info, label: 'About' },
-    { id: 'quad-hubs', icon: MapPin, label: 'Quad Hubs' },
-    { id: 'service-hubs', icon: Grid3X3, label: 'Service Hubs' },
-    { id: 'portfolio', icon: Briefcase, label: 'Portfolio' },
-    { id: 'lab', icon: FlaskConical, label: 'The Lab' },
-    { id: 'rfq', icon: FileText, label: 'RFQ' },
-    { id: 'settings', icon: Settings, label: 'Settings' },
+    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
+    { id: 'hero', icon: Video, label: 'Hero', path: '/admin/hero' },
+    { id: 'about', icon: Info, label: 'About', path: '/admin/about' },
+    { id: 'quad-hubs', icon: MapPin, label: 'Quad Hubs', path: '/admin/quad-hubs' },
+    { id: 'service-hubs', icon: Grid3X3, label: 'Service Hubs', path: '/admin/service-hubs' },
+    { id: 'portfolio', icon: Briefcase, label: 'Portfolio', path: '/admin/portfolio' },
+    { id: 'lab', icon: FlaskConical, label: 'The Lab', path: '/admin/lab' },
+    { id: 'rfq', icon: FileText, label: 'RFQ', path: '/admin/rfq' },
+    { id: 'settings', icon: Settings, label: 'Settings', path: '/admin/settings' },
   ];
 
   return (
@@ -65,8 +65,7 @@ export default function AdminSidebar({ activeTab, setActiveTab }: { activeTab: s
             key={item.id}
             icon={item.icon}
             label={item.label}
-            active={activeTab === item.id}
-            onClick={() => setActiveTab(item.id)}
+            to={item.path}
           />
         ))}
       </nav>
