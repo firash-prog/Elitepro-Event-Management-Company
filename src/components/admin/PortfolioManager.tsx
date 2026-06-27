@@ -9,9 +9,7 @@ import {
   Image as ImageIcon, 
   ExternalLink,
   ChevronRight,
-  GripVertical,
-  Maximize2,
-  X
+  GripVertical
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -23,7 +21,6 @@ interface Project {
   location: string;
   description: string;
   image_path: string;
-  client: string;
   is_featured: boolean;
   order: number;
 }
@@ -34,7 +31,6 @@ export default function PortfolioManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Project>>({});
   const [saving, setSaving] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   useEffect(() => {
     const q = query(collection(db, 'portfolio'), orderBy('order', 'asc'));
@@ -61,7 +57,6 @@ export default function PortfolioManager() {
         category: 'Corporate Event',
         year: new Date().getFullYear().toString(),
         location: '',
-        client: '',
         description: '',
         image_path: '',
         is_featured: false,
@@ -128,21 +123,14 @@ export default function PortfolioManager() {
             >
               <div className="relative aspect-video bg-black overflow-hidden">
                 {project.image_path ? (
-                  <div className="relative w-full h-full group/image cursor-zoom-in" onClick={() => setPreviewImage(project.image_path)}>
-                    <img src={project.image_path} alt={project.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-opacity bg-black/40">
-                      <div className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-                        <Maximize2 size={20} className="text-white" />
-                      </div>
-                    </div>
-                  </div>
+                  <img src={project.image_path} alt={project.title} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-white/10">
                     <ImageIcon size={48} strokeWidth={1} />
                   </div>
                 )}
                 {project.is_featured && (
-                  <div className="absolute top-4 left-4 bg-brand-teal text-black text-[0.5rem] px-2 py-1 uppercase font-bold tracking-tighter pointer-events-none">FEATURED</div>
+                  <div className="absolute top-4 left-4 bg-brand-teal text-black text-[0.5rem] px-2 py-1 uppercase font-bold tracking-tighter">FEATURED</div>
                 )}
               </div>
               
@@ -274,17 +262,6 @@ export default function PortfolioManager() {
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-[0.6rem] text-white/30 uppercase tracking-widest">Client Name</label>
-                      <input 
-                        type="text" 
-                        value={formData.client}
-                        onChange={(e) => setFormData({ ...formData, client: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 p-4 text-white text-sm outline-none focus:border-brand-teal transition-all"
-                        placeholder="e.g. NeoTech Group"
-                      />
-                    </div>
-
                     <div className="flex items-center gap-3 p-4 bg-white/5 border border-white/5">
                       <input 
                         type="checkbox" 
@@ -324,47 +301,6 @@ export default function PortfolioManager() {
                     </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Lightbox Preview */}
-      <AnimatePresence>
-        {previewImage && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-8 md:p-20">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setPreviewImage(null)}
-              className="absolute inset-0 bg-brand-dark/95 backdrop-blur-xl cursor-zoom-out"
-            />
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="relative max-w-full max-h-full flex flex-col items-center gap-6"
-            >
-              <div className="absolute -top-12 right-0">
-                <button 
-                  onClick={() => setPreviewImage(null)}
-                  className="text-white/40 hover:text-white flex items-center gap-2 text-[0.6rem] uppercase tracking-[0.3em] font-bold transition-colors"
-                >
-                  Close Preview <X size={18} />
-                </button>
-              </div>
-              <div className="bg-black/40 p-2 border border-white/10 shadow-2xl">
-                <img 
-                  src={previewImage} 
-                  className="max-w-full max-h-[80vh] object-contain" 
-                  alt="Full resolution preview" 
-                />
-              </div>
-              <div className="px-6 py-2 bg-brand-teal/10 border border-brand-teal/20 rounded-full">
-                <p className="text-brand-teal text-[0.55rem] uppercase tracking-[0.2em] font-bold">Spatial Fidelity Inspection Mode</p>
               </div>
             </motion.div>
           </div>

@@ -7,7 +7,7 @@ export default function VideoHero() {
   const [data, setData] = useState({
     video_path: '/videos/hero-video.mp4',
     poster_path: '/images/hero-poster.jpg',
-    label: 'HELLO PRO EVENTS & ADVERTISING',
+    label: 'ELITE PRO EVENTS & ADVERTISING',
     title_line1: 'ARCHITECTS OF',
     title_line2: 'LUXURY EXPERIENCES',
     subtitle: 'We engineer high-fidelity spatial events for forward-thinking brands.',

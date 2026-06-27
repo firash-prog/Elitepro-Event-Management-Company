@@ -15,7 +15,7 @@ export default function Navbar() {
 
       <div className="absolute left-1/2 -translate-x-1/2">
         <a href="/" className="text-xl font-sans font-light tracking-[0.2em] text-white uppercase">
-          HELLOPRO
+          ELITEPRO
         </a>
       </div>
 

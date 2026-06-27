@@ -1,52 +1,44 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { usePreloader } from '../hooks/usePreloader';
+import { useEffect, useState } from 'react';
 
 export default function Preloader() {
-  const { progress, isLoaded } = usePreloader();
-  const words = ['H', 'E', 'L', 'L', 'O'];
+  const [isVisible, setIsVisible] = useState(true);
+  const words = ['E', 'L', 'I', 'T', 'E'];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <AnimatePresence>
-      {!isLoaded && (
+      {isVisible && (
         <motion.div
           initial={{ y: 0 }}
           exit={{ y: '-100%' }}
-          transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-brand-dark overflow-hidden"
+          transition={{ duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.2 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-brand-teal overflow-hidden"
         >
-          <div className="flex gap-2 sm:gap-4 overflow-hidden mb-12">
+          <div className="flex gap-2 sm:gap-4 overflow-hidden">
             {words.map((char, i) => (
               <motion.span
                 key={i}
                 initial={{ y: '100%' }}
                 animate={{ y: 0 }}
-                exit={{ y: '-100%', opacity: 0 }}
+                exit={{ scale: 0.5, opacity: 0 }}
                 transition={{
                   y: { duration: 0.8, ease: [0.33, 1, 0.68, 1], delay: i * 0.1 },
+                  scale: { duration: 0.4 },
                   opacity: { duration: 0.4 }
                 }}
-                className="text-6xl sm:text-8xl md:text-9xl font-display font-black text-brand-teal"
+                className="text-6xl sm:text-8xl md:text-9xl font-display font-black text-brand-light"
               >
                 {char}
               </motion.span>
             ))}
           </div>
-
-          <div className="w-64 h-[1px] bg-white/10 relative overflow-hidden">
-            <motion.div 
-              className="absolute inset-0 bg-brand-teal origin-left"
-              style={{ scaleX: progress / 100 }}
-              transition={{ duration: 0.5 }}
-            />
-          </div>
-          
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-6 font-mono text-[0.6rem] text-brand-teal tracking-[0.4em] uppercase opacity-60"
-          >
-            Spatial Engineering Initializing {progress}%
-          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

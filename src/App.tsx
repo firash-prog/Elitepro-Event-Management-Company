@@ -19,12 +19,7 @@ import RFQEngine from './components/RFQEngine';
 import Footer from './components/Footer';
 import AdminPanel from './components/admin/AdminPanel';
 
-import { motion, AnimatePresence } from 'motion/react';
-import { usePreloader } from './hooks/usePreloader';
-
 function PublicSite() {
-  const { isLoaded } = usePreloader();
-
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -46,26 +41,16 @@ function PublicSite() {
   return (
     <main className="relative selection:bg-brand-accent selection:text-brand-dark">
       <Preloader />
-      <AnimatePresence>
-        {isLoaded && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-          >
-            <Navbar />
-            <VideoHero />
-            <Bio />
-            <Services />
-            <CaseStudies />
-            <HubGrid />
-            <YouTubeGrid />
-            <Lab />
-            <RFQEngine />
-            <Footer />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Navbar />
+      <VideoHero />
+      <Bio />
+      <Services />
+      <CaseStudies />
+      <HubGrid />
+      <YouTubeGrid />
+      <Lab />
+      <RFQEngine />
+      <Footer />
     </main>
   );
 }

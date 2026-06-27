@@ -55,7 +55,7 @@ export default function AdminSidebar() {
     <div className="w-64 bg-brand-dark border-r border-brand-teal/10 flex flex-col h-screen fixed left-0 top-0 z-50">
       <div className="p-8 border-b border-brand-teal/10">
         <h2 className="text-xl font-sans font-light tracking-[0.2em] text-white uppercase">
-          HELLOPRO <span className="text-[0.6rem] text-brand-teal block tracking-widest mt-1 opacity-60">Admin CMS</span>
+          ELITEPRO <span className="text-[0.6rem] text-brand-teal block tracking-widest mt-1 opacity-60">Admin CMS</span>
         </h2>
       </div>
 
